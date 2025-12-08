@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "785058232214",
+    "project_id": "skripsiapp-958f9",
+    "storage_bucket": "skripsiapp-958f9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:785058232214:android:60f3d0c70e4641dd374fb7",
+        "android_client_info": {
+          "package_name": "com.example.bimbinganskripsi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvUvsFKHgnH2RSynLBY68NmK6akb4k1Xg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="primary">#00695C</color>
+    <color name="primary_light">#4DB6AC</color>
+    <color name="accent">#FF9800</color>
+    <color name="background_gray">#F5F7FA</color>
+
+    <color name="primary_campus">#1565C0</color>
+    <color name="accent_gold">#FFC107</color>
+    <color name="bg_soft">#F3F4F6</color>
+    <color name="input_bg">#F9FAFB</color>
+    <color name="text_gray">#6B7280</color>
+
+    <color name="simsta_orange">#FFAB40</color>
+    <color name="simsta_bg_top">#FFE0B2</color>
+    <color name="simsta_card_bg">#FFFFFF</color>
+    <color name="text_dark">#263238</color>
+    <color name="text_light">#78909C</color>
+    <color name="status_green">#00C853</color>
+</resources>
