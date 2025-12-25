@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.bimbinganskripsi.api.RetrofitClient
+import com.example.bimbinganskripsi.api.ApiConfig
 import com.example.bimbinganskripsi.model.BimbinganItem
 import retrofit2.Call
 import retrofit2.Callback
@@ -35,14 +35,28 @@ class KoreksiActivity : AppCompatActivity() {
 
         if (item != null) {
             tvNama.text = item.nama_mahasiswa
+
+
+
+
             tvCatatan.text = item.catatan
 
             // 2. Buka PDF
             btnFile.setOnClickListener {
                 if (!item.file_path.isNullOrEmpty()) {
-                    // Pastikan IP ini sesuai dengan IP Laptop kamu
-                    val url = "http://192.168.1.106:8000/storage/" + item.file_path
-                    startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+
+                    // === PERBAIKAN DI SINI ===
+                    // Hapus IP manual, ganti dengan ApiConfig.FILE_BASE_URL
+                    val fullUrl = ApiConfig.FILE_BASE_URL + item.file_path
+
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(fullUrl))
+                    try {
+                        startActivity(intent)
+                    } catch (e: Exception) {
+                        Toast.makeText(this, "Tidak ada aplikasi pembuka PDF", Toast.LENGTH_SHORT).show()
+                    }
+                    // =========================
+
                 } else {
                     Toast.makeText(this, "File tidak ditemukan", Toast.LENGTH_SHORT).show()
                 }

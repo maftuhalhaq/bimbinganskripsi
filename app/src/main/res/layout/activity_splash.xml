@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"> <LinearLayout
+    android:background="@color/bg_surface"> <LinearLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_centerInParent="true"
@@ -21,14 +21,14 @@
         android:text="Bimbingan Skripsi"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="@color/primary"/>
+        android:textColor="@color/text_primary"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="STMIK PPKIA Pradnya Paramita"
         android:textSize="14sp"
-        android:textColor="#757575"
+        android:textColor="@color/brand_secondary"
         android:layout_marginTop="4dp"/>
 </LinearLayout>
 
@@ -39,6 +39,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
         android:text="Versi 1.0"
-        android:textColor="#BDBDBD"/>
+        android:textColor="@color/text_hint"/>
 
 </RelativeLayout>

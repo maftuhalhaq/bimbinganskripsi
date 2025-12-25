@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.bimbinganskripsi.api.RetrofitClient
 import com.example.bimbinganskripsi.model.RiwayatResponse
 import retrofit2.Call
 import retrofit2.Callback

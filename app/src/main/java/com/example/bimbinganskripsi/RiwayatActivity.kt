@@ -3,12 +3,14 @@ package com.example.bimbinganskripsi
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout // <--- Import ini
-import com.example.bimbinganskripsi.api.RetrofitClient
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.bimbinganskripsi.model.RiwayatResponse
 import retrofit2.Call
 import retrofit2.Callback
@@ -16,57 +18,77 @@ import retrofit2.Response
 
 class RiwayatActivity : AppCompatActivity() {
 
-    // Deklarasi Variabel
     private lateinit var swipeRefresh: SwipeRefreshLayout
-    private lateinit var rvBimbingan: RecyclerView
+    private lateinit var rvRiwayat: RecyclerView
+    private lateinit var layoutKosong: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_riwayat)
 
-        rvBimbingan = findViewById(R.id.rvBimbingan)
-        swipeRefresh = findViewById(R.id.swipeRefresh) // <--- Inisialisasi
+        rvRiwayat = findViewById(R.id.rvRiwayat)
+        swipeRefresh = findViewById(R.id.swipeRefresh)
+        layoutKosong = findViewById(R.id.layoutKosong)
 
-        rvBimbingan.layoutManager = LinearLayoutManager(this)
+        rvRiwayat.layoutManager = LinearLayoutManager(this)
 
-        // 1. Panggil data pertama kali saat dibuka
         getDataBimbingan()
 
-        // 2. Aksi saat layar ditarik (Swipe)
         swipeRefresh.setOnRefreshListener {
             getDataBimbingan()
         }
     }
 
     private fun getDataBimbingan() {
-        // Nyalakan animasi loading putar-putar
         swipeRefresh.isRefreshing = true
+        val sharedPref = getSharedPreferences("APP_SKRIPSI", Context.MODE_PRIVATE)
+        val token = sharedPref.getString("TOKEN", "")!!
 
-        val token = getSharedPreferences("APP_SKRIPSI", Context.MODE_PRIVATE).getString("TOKEN", "")!!
+        // AMBIL ID YANG TADI DISIMPAN DI HOME
+        val idSkripsi = sharedPref.getString("ID_SKRIPSI", "")
 
-        RetrofitClient.instance.getRiwayat(token).enqueue(object : Callback<RiwayatResponse> {
+        // Cek Debugging
+        Log.d("RIWAYAT", "Token: $token")
+        Log.d("RIWAYAT", "ID Skripsi: $idSkripsi")
+
+        if (idSkripsi.isNullOrEmpty()) {
+            swipeRefresh.isRefreshing = false
+            Toast.makeText(this, "ID Skripsi belum dimuat. Kembali ke Home dulu.", Toast.LENGTH_LONG).show()
+            // Tampilkan layout kosong karena ID tidak ada
+            rvRiwayat.visibility = View.GONE
+            layoutKosong.visibility = View.VISIBLE
+            return
+        }
+
+        // PANGGIL API DENGAN ID
+        RetrofitClient.instance.getRiwayat(token, idSkripsi).enqueue(object : Callback<RiwayatResponse> {
             override fun onResponse(call: Call<RiwayatResponse>, response: Response<RiwayatResponse>) {
-                // Matikan loading
                 swipeRefresh.isRefreshing = false
 
                 if (response.isSuccessful) {
-                    val listData = response.body()?.data ?: emptyList()
+                    val listData = response.body()?.data
 
-                    // Pasang adapter lagi dengan data terbaru
-                    val adapter = BimbinganAdapter(listData) { item ->
-                        val intent = Intent(this@RiwayatActivity, DetailBimbinganActivity::class.java)
-                        intent.putExtra("DATA_BIMBINGAN", item)
-                        startActivity(intent)
+                    if (!listData.isNullOrEmpty()) {
+                        val adapter = RiwayatAdapter(listData) { item ->
+                            val intent = Intent(this@RiwayatActivity, DetailBimbinganActivity::class.java)
+                            intent.putExtra("DATA_BIMBINGAN", item)
+                            startActivity(intent)
+                        }
+                        rvRiwayat.adapter = adapter
+                        rvRiwayat.visibility = View.VISIBLE
+                        layoutKosong.visibility = View.GONE
+                    } else {
+                        rvRiwayat.visibility = View.GONE
+                        layoutKosong.visibility = View.VISIBLE
                     }
-                    rvBimbingan.adapter = adapter
-
-                    Toast.makeText(this@RiwayatActivity, "Data diperbarui", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this@RiwayatActivity, "Gagal memuat: ${response.code()}", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<RiwayatResponse>, t: Throwable) {
                 swipeRefresh.isRefreshing = false
-                Toast.makeText(this@RiwayatActivity, "Gagal refresh: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RiwayatActivity, "Error koneksi", Toast.LENGTH_SHORT).show()
             }
         })
     }

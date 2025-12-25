@@ -1,26 +1,14 @@
 package com.example.bimbinganskripsi.api
 
-import com.example.bimbinganskripsi.model.ChatResponse // <--- INI TADI KURANG
-import com.example.bimbinganskripsi.model.DosenResponse
-import com.example.bimbinganskripsi.model.LoginResponse
-import com.example.bimbinganskripsi.model.RiwayatResponse
-import com.example.bimbinganskripsi.model.SkripsiResponse
-import com.example.bimbinganskripsi.model.UserResponse // <--- INI JUGA KURANG
+import com.example.bimbinganskripsi.model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Multipart
-import retrofit2.http.POST
-import retrofit2.http.Part
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface ApiService {
 
-    // ============================ LOGIN =============================
+    // --- LOGIN ---
     @FormUrlEncoded
     @POST("login")
     fun login(
@@ -29,18 +17,14 @@ interface ApiService {
         @Field("fcm_token") tokenFCM: String?,
     ): Call<LoginResponse>
 
-    // ============================ AJUKAN SKRIPSI (VERSI BARU) ====================
-    // Hapus yang versi lama, pakai yang ada dosen_id ini saja
-    @FormUrlEncoded
-    @POST("skripsi")
-    fun ajukanJudul(
+    // --- RIWAYAT (PERBAIKAN UTAMA DI SINI) ---
+    @GET("bimbingan")
+    fun getRiwayat(
         @Header("Authorization") token: String,
-        @Field("judul") judul: String,
-        @Field("deskripsi") deskripsi: String,
-        @Field("dosen_id") dosenId: Int
-    ): Call<SkripsiResponse>
+        @Query("skripsi_id") skripsiId: String // Menambahkan Parameter ID
+    ): Call<RiwayatResponse>
 
-    // ============================ UPLOAD BIMBINGAN ====================
+    // --- UPLOAD BIMBINGAN ---
     @Multipart
     @POST("bimbingan")
     fun uploadBimbingan(
@@ -50,41 +34,11 @@ interface ApiService {
         @Part file: MultipartBody.Part
     ): Call<Void>
 
-    // ============================ RIWAYAT ====================
-    @GET("bimbingan")
-    fun getRiwayat(
-        @Header("Authorization") token: String
-    ): Call<RiwayatResponse>
+    // --- SKRIPSI SAYA (DASHBOARD) ---
+    @GET("skripsi")
+    fun getMySkripsi(@Header("Authorization") token: String): Call<SkripsiResponse>
 
-    // ============================ MENU DOSEN ====================
-    @GET("dosen/bimbingan")
-    fun getAllBimbinganDosen(
-        @Header("Authorization") token: String
-    ): Call<RiwayatResponse>
-
-    @FormUrlEncoded
-    @POST("dosen/bimbingan/{id}")
-    fun updateStatusBimbingan(
-        @Header("Authorization") token: String,
-        @Path("id") id: Int,
-        @Field("status") status: String
-    ): Call<Void>
-
-    // ============================ AMBIL LIST DOSEN ====================
-    @GET("list-dosen")
-    fun getDosenList(@Header("Authorization") token: String): Call<DosenResponse>
-
-    // ============================ GANTI PASSWORD ====================
-    @FormUrlEncoded
-    @POST("change-password")
-    fun updatePassword(
-        @Header("Authorization") token: String,
-        @Field("current_password") passLama: String,
-        @Field("new_password") passBaru: String,
-        @Field("new_password_confirmation") passKonfirmasi: String
-    ): Call<Void>
-
-    // ============================ CHAT ====================
+    // --- CHAT ---
     @FormUrlEncoded
     @POST("chat/send")
     fun sendMessage(
@@ -102,9 +56,37 @@ interface ApiService {
     @GET("my-dosen")
     fun getMyDosen(@Header("Authorization") token: String): Call<UserResponse>
 
-    // ...
+    // --- LAINNYA ---
+    @GET("list-dosen")
+    fun getDosenList(@Header("Authorization") token: String): Call<DosenResponse>
 
-    // AMBIL DATA SKRIPSI SAYA (Untuk Dashboard)
-    @GET("skripsi")
-    fun getMySkripsi(@Header("Authorization") token: String): Call<SkripsiResponse>
+    @FormUrlEncoded
+    @POST("skripsi")
+    fun ajukanJudul(
+        @Header("Authorization") token: String,
+        @Field("judul") judul: String,
+        @Field("deskripsi") deskripsi: String,
+        @Field("dosen_id") dosenId: Int
+    ): Call<SkripsiResponse>
+
+    @FormUrlEncoded
+    @POST("change-password")
+    fun updatePassword(
+        @Header("Authorization") token: String,
+        @Field("current_password") passLama: String,
+        @Field("new_password") passBaru: String,
+        @Field("new_password_confirmation") passKonfirmasi: String
+    ): Call<Void>
+
+    // --- KHUSUS DOSEN ---
+    @GET("dosen/bimbingan")
+    fun getAllBimbinganDosen(@Header("Authorization") token: String): Call<RiwayatResponse>
+
+    @FormUrlEncoded
+    @POST("dosen/bimbingan/{id}")
+    fun updateStatusBimbingan(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int,
+        @Field("status") status: String
+    ): Call<Void>
 }

@@ -1,12 +1,16 @@
 package com.example.bimbinganskripsi.model
 
+import com.google.gson.annotations.SerializedName
+
 data class SkripsiResponse(
-    val message: String?,
-    val data: SkripsiData?
+    @SerializedName("success") val success: Boolean,
+    @SerializedName("message") val message: String,
+    @SerializedName("data") val data: SkripsiData?
 )
 
 data class SkripsiData(
-    val id: Int,
-    val judul: String,
-    val status: String
+    // PENTING: Menambahkan ID di sini
+    @SerializedName("id") val id: Int,
+    @SerializedName("judul") val judul: String,
+    @SerializedName("status") val status: String
 )
