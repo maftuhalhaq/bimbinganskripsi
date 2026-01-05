@@ -89,4 +89,13 @@ interface ApiService {
         @Path("id") id: Int,
         @Field("status") status: String
     ): Call<Void>
+
+    // ... kode lain ...
+
+    // ============================ HAPUS BIMBINGAN ====================
+    @DELETE("bimbingan/{id}")
+    fun deleteBimbingan(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Call<Void> // Gunakan Void karena kita cuma butuh sukses/gagal, tidak butuh data balikan
 }
